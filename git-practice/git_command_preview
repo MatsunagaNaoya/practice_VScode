@@ -1,0 +1,38 @@
+以下に、Gitの基本的な操作コマンドと同様の動作をVisual Studio Code内で行う方法を一覧にまとめました。
+
+1. リポジトリの初期化
+Gitコマンド: git init
+VS Code: ソース管理ビューを開き、「リポジトリを初期化」ボタンをクリックします。
+2. ファイルのステージング
+Gitコマンド: git add <file>
+VS Code: ソース管理ビューで変更されたファイルの横にある「+」アイコンをクリックします。
+3. コミット
+Gitコマンド: git commit -m "メッセージ"
+VS Code: ソース管理ビューで「コミットメッセージ」を入力し、「✔」アイコンをクリックします。
+4. ブランチの作成
+Gitコマンド: git branch <branch-name>
+VS Code: 左下のステータスバーにある現在のブランチ名をクリックし、「新しいブランチを作成」を選択します。
+5. ブランチの切り替え
+Gitコマンド: git switch <branch-name> または git checkout <branch-name>
+VS Code: 左下のステータスバーにある現在のブランチ名をクリックし、切り替えたいブランチを選択します。
+6. マージ
+Gitコマンド: git merge <branch-name>
+VS Code: ソース管理ビューで「ブランチ」アイコンをクリックし、「ブランチをマージ」を選択します。
+7. コミットの取り消し
+Gitコマンド: git reset HEAD~1 または git reset --soft HEAD~1
+VS Code: ソース管理ビューで「コミットの取り消し」オプションを使用します（拡張機能が必要な場合があります）。
+8. ステータスの確認
+Gitコマンド: git status
+VS Code: ソース管理ビューで現在の変更状況が表示されます。
+9. ログの確認
+Gitコマンド: git log
+VS Code: ソース管理ビューで「コミット履歴」アイコンをクリックします。
+10. リモートリポジトリの設定
+Gitコマンド: git remote add origin <URL>
+VS Code: コマンドパレット（Ctrl + Shift + P）を開き、「Git: リモートを追加」を選択します。
+11. プッシュ
+Gitコマンド: git push
+VS Code: ソース管理ビューで「プッシュ」ボタンをクリックします。
+12. プル
+Gitコマンド: git pull
+VS Code: ソース管理ビューで「プル」ボタンをクリックします。
