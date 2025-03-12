@@ -15,6 +15,7 @@ VS Code: ソース管理ビューで「コミットメッセージ」を入力�
 4. ブランチの作成
 Gitコマンド: git branch <branch-name>
 VS Code: 左下のステータスバーにある現在のブランチ名をクリックし、「新しいブランチを作成」を選択します。
+補足：git branchのみだと、今のブランチ場所を確認する。*がついているのが今いるブランチ。
 
 5. ブランチの切り替え
 Gitコマンド: git switch <branch-name> または git checkout <branch-name>
@@ -23,6 +24,7 @@ VS Code: 左下のステータスバーにある現在のブランチ名をク�
 6. マージ
 Gitコマンド: git merge <branch-name>
 VS Code: ソース管理ビューで「ブランチ」アイコンをクリックし、「ブランチをマージ」を選択します。
+補足：マージするときは、マージ先のブランチに移動してからマージする。例：masterにマージする場合は、masterに移動してからマージするブランチ名を選択。
 
 7. コミットの取り消し
 Gitコマンド: git reset HEAD~1 または git reset --soft HEAD~1
