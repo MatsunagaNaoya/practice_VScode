@@ -1,0 +1,447 @@
+API開発
+APIの開発環境について、以下手順にて作成する。
+
+【構築手順】
+1. Windows に WSL2 をインストールする
+2. WSL2 に Ubuntu をインストールする
+3. Ubuntu に Volta をインストールする
+4. Ubuntu に SAM CLI をインストールする
+5. Ubuntu に Docker をインストールする
+6. Ubuntu に Docker Compose をインストールする
+7. VSCode に 拡張機能をインストールする
+8. Ubuntu の Git設定を行いAPI開発用レポジトリをcloneする
+9. 開発開始
+
+【手順詳細】
+1. Windows に WSL2 をインストールする
+    1. 公式サイト（以下のURL）の手順1から手順5を実行する
+        https://docs.microsoft.com/ja-jp/windows/wsl/install-manual
+        理由: WSL2を有効にするため。
+
+    2. PowerShell（管理者権限）で次を実行する
+        ```plaintext
+        dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+        ```
+        理由: WSL2を有効にするため。
+
+    3. PC再起動する
+        理由: 変更を適用するため。
+
+    4. PowerShell（管理者権限）で次を実行する
+        ```plaintext
+        dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+        ```
+        理由: 仮想マシンプラットフォームを有効にするため。
+
+    5. PC再起動する
+        理由: 変更を適用するため。
+
+    6. Linuxカーネル更新プログラムを実行する
+        https://docs.microsoft.com/ja-jp/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package
+        理由: 最新のLinuxカーネルをインストールするため。
+
+    7. PowerShell（通常権限）にてWSL2を既定のバージョンとして設定する
+        ```plaintext
+        wsl --set-default-version 2
+        ```
+        理由: WSL2をデフォルトに設定するため。
+
+2. WSL2 に Ubuntu をインストールする
+    1. Ubuntu をインストールする
+        1. 次サイトからインストーラーを入手する
+            https://docs.microsoft.com/ja-jp/windows/wsl/install-manual#downloading-distributions
+            理由: Ubuntuのインストーラーをダウンロードするため。
+
+        2. Linux のユーザー名とパスワードを設定する
+            理由: 管理者権限を持つユーザーを作成するため。
+
+    2. インストールした Ubuntu の状態を確認する
+        1. PowerShell（通常権限）で次を実行する
+            ```plaintext
+            wsl --list --verbose
+            ```
+            理由: インストールされたUbuntuの状態を確認するため。
+
+    3. Ubuntu のパッケージを最新化する
+        1. Ubuntu（WSL2）のTerminal で以下を実行する（パッケージ一覧を更新）
+            ```plaintext
+            sudo apt update
+            ```
+            理由: パッケージリストを最新にするため。
+
+        2. Ubuntu（WSL2）のTerminal で以下を実行する（インストール済みのパッケージを更新）
+            ```plaintext
+            sudo apt upgrade
+            ```
+            理由: インストール済みのパッケージを最新にするため。
+
+3. Ubuntu に Volta をインストールする
+    Node、NPM、Yarn は必ず Volta コマンドでインストールすること（Ubuntu に直接、Node、NPM、Yarn をインストールしないこと）
+    本プロジェクトで使用する Node と Yarn は、package.volta.json で バージョンを固定化している（Voltaが自動でインストールするため、手動でインストールする必要はない）
+
+    1. 公式サイト（以下のURL）の手順でインストールします。
+        https://volta.sh/
+
+        1. Ubuntu（WSL2）のTerminal でVoltaをインストールする
+            ```plaintext
+            curl https://get.volta.sh | bash
+            volta --version
+            ```
+            理由: Voltaをインストールし、バージョンを確認するため。
+
+        2. Ubuntu（WSL2）のTerminal でNodeをインストールする
+            ```plaintext
+            volta install node@20
+            node --version
+            npm --version
+            ```
+            理由: Node.jsとnpmをインストールし、バージョンを確認するため。
+
+        3. Ubuntu（WSL2）のTerminal でstart using Node
+            ```plaintext
+            node
+            ```
+            理由: Node.jsが正しくインストールされているか確認するため。
+
+        4. Ubuntu（WSL2）のTerminal でyarnをインストールする
+            ```plaintext
+            volta install yarn
+            yarn --version
+            ```
+            理由: Yarnをインストールし、バージョンを確認するため。
+
+4. Ubuntu に SAM CLI をインストールする
+    aws-sam-cli（Python製）を使用する
+    公式サイトには aws アカウント作成の手順があるが、ローカル実行する分には不要
+    公式サイトのARM用の手順（"pip install aws-sam-cli"）で、WSL2/Ubuntu22 へインストールできる
+
+    1. aws sam cli のインストール
+        1. Linux への aws sam cli のインストール
+            https://docs.aws.amazon.com/ja_jp/serverless-application-model/latest/developerguide/serverless-sam-cli-install-linux.html
+            理由: AWS SAM CLIのインストール手順を確認するため。
+
+        2. Ubuntu（WSL2）のTerminal でpythonをインストールする
+            ```plaintext
+            sudo apt update
+            sudo apt install python3-pip
+            ```
+            理由: Pythonとpipをインストールするため。
+
+        3. Ubuntu（WSL2）のTerminal を再起動する（念のため）
+            理由: 変更を適用するため。
+
+        4. Ubuntu（WSL2）のTerminal でaws sam cliをインストールする
+            ```plaintext
+            pip install aws-sam-cli
+            ```
+            理由: AWS SAM CLIをインストールするため。
+
+        5. Ubuntu（WSL2）のTerminal を再起動する（こちらは必要）
+            理由: 変更を適用するため。
+
+        6. Ubuntu（WSL2）のTerminal でaws sam cliのバージョンを確認する
+            ```plaintext
+            sam --version
+            ```
+            理由: AWS SAM CLIのバージョンを確認するため。
+
+5. Ubuntu に Docker をインストールする
+    1. Dockerの前提条件を確認する
+        1. Ubuntu（WSL2）のTerminal で以下を実行し、amd64であれば問題ない
+            ```plaintext
+            dpkg --print-architecture
+            ```
+            理由: システムのアーキテクチャを確認するため。
+
+        2. Ubuntu（WSL2）のTerminal で以下を実行し、jammyであれば問題ない
+            ```plaintext
+            lsb_release -cs
+            ```
+            理由: Ubuntuのコードネームを確認するため。
+
+        3. Ubuntu（WSL2）のTerminal でDockerのインストールに必要となるパッケージをインストールする
+            ```plaintext
+            sudo apt update
+            sudo apt install apt-transport-https ca-certificates curl gnupg lsb-release
+            ```
+            理由: Dockerのインストールに必要なパッケージをインストールするため。
+
+    2. Dockerのインストールに必要となるパッケージをインストールする
+        1. Ubuntu（WSL2）のTerminal でGPG公開鍵が存在しないことを確認する
+            ```plaintext
+            ll /usr/share/keyrings/ | grep docker
+            ```
+            理由: GPG公開鍵が存在しないことを確認するため。
+
+        2. Ubuntu（WSL2）のTerminal でGPG公開鍵をインストールする
+            ```plaintext
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+            ```
+            理由: DockerのGPG公開鍵をインストールするため。
+
+    3. DockerのAPTリポジトリを追加する
+        1. Ubuntu（WSL2）のTerminal でAPTソースリストにdocker.listが存在しないことを確認する
+            ```plaintext
+            ll /etc/apt/sources.list.d/
+            ```
+            理由: DockerのAPTソースリストが存在しないことを確認するため。
+
+        2. Ubuntu（WSL2）のTerminal でDockerのAPTリポジトリ（stable）を追加する
+            ```plaintext
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+            ```
+            理由: DockerのAPTリポジトリを追加するため。
+
+        3. Ubuntu（WSL2）のTerminal でDocker Engine（コミュニティエディション）をインストールする
+            ```plaintext
+            sudo apt update
+            sudo apt install docker-ce docker-ce-cli containerd.io
+            ```
+            理由: Docker Engineをインストールするため。
+
+    4. sudo無しでdockerコマンドを実行できるよう自身をdockerグループに所属させる
+
+        4-1）Ubuntu（WSL2）のTerminal で自身をdockerグループに所属させる
+            ```plaintext
+            sudo usermod -aG docker $USER
+            ```
+            理由: sudo無しでdockerコマンドを実行できるようにするため。
+
+        4-2）Ubuntu（WSL2）のTerminal を再起動する
+            理由: 変更を適用するため。
+
+        4-3）Ubuntu（WSL2）のTerminal で自身のgroupsにdockerが存在することを確認する
+            ```plaintext
+            id
+            ```
+            理由: dockerグループに所属していることを確認するため。
+
+5. Docker の実行確認を行う
+
+    5-1）Ubuntu（WSL2）のTerminal でDockerを起動する
+        ```plaintext
+        sudo service docker start
+        ```
+        理由: Dockerを起動するため。
+
+    5-2）Ubuntu（WSL2）のTerminal でDockerデーモンステータス確認
+        ```plaintext
+        sudo service docker status
+        ```
+        理由: Dockerデーモンのステータスを確認するため。
+
+    5-3）Ubuntu（WSL2）のTerminal でhello-world コンテナーを実行する
+        ```plaintext
+        docker run hello-world
+        ```
+        理由: Dockerが正しく動作しているか確認するため。
+
+    5-4）Ubuntu（WSL2）のTerminal でDockerを停止する
+        ```plaintext
+        sudo service docker stop
+        ```
+        理由: Dockerを停止するため。
+
+（６）Ubuntu に Docker Compose をインストールする
+1. Docker Compose をインストールする
+
+1-1）Ubuntu（WSL2）のTerminal でDocker Composeが未インストールであることを確認する
+    ```plaintext
+    ll /usr/local/bin/docker-compose
+    ```
+    理由: Docker Composeが未インストールであることを確認するため。
+
+1-2）Ubuntu（WSL2）のTerminal でDocker Composeをインストールする
+    ```plaintext
+    sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    ```
+    理由: Docker Composeをインストールするため。
+
+1-3）Ubuntu（WSL2）のTerminal でDocker Compose コマンドに実行権限を付与する
+    ```plaintext
+    sudo chmod +x /usr/local/bin/docker-compose
+    ```
+    理由: Docker Composeコマンドに実行権限を付与するため。
+
+（７）VSCode に 拡張機能をインストールする
+1. 拡張機能「WSL - Remote」をインストールする
+    1-1）VSCode の Extensions（Ctrl＋Shift＋X）からインストールする
+        https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl
+        理由: VSCodeでWSL環境を利用するための拡張機能をインストールするため。
+
+2. 推奨される拡張機能をインストールする
+    2-1）検索ボックスに @recommended と入力し、WORKSPACE RECOMMENDATIONS から、未インストールの拡張機能をインストールする
+        理由: 推奨される拡張機能をインストールするため。
+
+（８）Ubuntu の Git設定を行いAPI開発用レポジトリをcloneする
+1. Git設定およびclone
+    1-1）Ubuntu（WSL2）のTerminal でGitのグローバル設定（ユーザーごとの設定）をする
+        ```plaintext
+        git config --global core.autoCRLF false
+        git config --global core.safecrlf false
+        git config --global init.defaultBranch develop
+        ```
+        理由: Gitのグローバル設定を行うため。
+
+    1-2）Ubuntu（WSL2）のTerminal でGitのグローバル設定を確認する
+        ```plaintext
+        cat ~/.gitconfig
+        または
+        git config --list
+        または
+        git config --global --list
+        ```
+        理由: Gitのグローバル設定を確認するため。
+
+    1-3）Ubuntu（WSL2）のTerminal で開発用ディレクトリを作成する
+        ```plaintext
+        mkdir ~/dev/
+        cd ~/dev/
+        ```
+        理由: 開発用ディレクトリを作成するため。
+
+    以下、保留作業
+    1-4）Ubuntu（WSL2）のTerminal でgit-remote-codecommitをインストールする（要python3）
+        ```plaintext
+        pip install git-remote-codecommit
+        ```
+        理由: AWS CodeCommitリポジトリを利用するためのツールをインストールするため。
+
+    1-5）Ubuntu（WSL2）のTerminal で開発環境（Account ID:xxxxxxxxxxxxxxxxxxxx）のプロファイルを設定する（例:aws configure --profile om-dev）
+        ```plaintext
+        aws configure
+        AWS Access Key ID [None]: ******************5E
+        AWS Secret Access Key [None]: **************************************sN
+        Default region name [None]: ap-northeast-1
+        Default output format [None]: yaml
+        ```
+        理由: AWS CLIのプロファイルを設定するため。
+
+    1-6）Ubuntu（WSL2）のTerminal でプロファイルを追加する
+        ```plaintext
+        vi .aws/config
+        [default]
+        region = ap-northeast-1
+        output = yaml
+
+        [profile om-dev]
+        role_arn = arn:aws:iam::xxxxxxxxxxxxxx:role/yyyyyyyyyyyyyyyyyyyyyyyyyyy
+        region = ap-northeast-1
+        output = yaml
+        source_profile = default
+        ```
+        理由: AWS CLIのプロファイルを追加するため。
+
+    1-7）Ubuntu（WSL2）のTerminal でAPI開発用レポジトリをcloneする
+        ```plaintext
+        git clone codecommit://xxxxxx@yyyyyyyyyyyyyyyyyyyyy
+        ```
+        理由: API開発用のリポジトリをクローンするため。
+
+    1-8）Ubuntu（WSL2）のTerminal でファイルパーミッションの変更を無視するよう設定する
+        ```plaintext
+        cd ./xxxxxxxxxxxxxxxxxxxxxxxx
+        git config --local core.filemode false
+        ```
+        理由: ファイルパーミッションの変更を無視するため。
+
+    1-9）Ubuntu（WSL2）のTerminal でAPI開発用レポジトリを開く（VSCodeが起動する）
+        ```plaintext
+        cd ../
+        code xxxxxxxxxxxxxxxxxxxxxxxx
+        ```
+        理由: VSCodeでAPI開発用のリポジトリを開くため。
+
+（９）開発開始
+以降の手順は、VSCodeのUbuntu（WSL2）ベースのTerminalを開き（Ctrl+@）操作している手順である。
+
+0-1）開発環境のルートディレクトリへ移動する
+    ```plaintext
+    cd ./xxxxxxxxxxxxxxxxxxxxxxxx
+    ```
+    理由: 開発環境のルートディレクトリに移動するため。
+
+1. 作業ブランチを準備する
+    1-1）リモートリポジトリのブランチを一覧化
+        ```plaintext
+        git branch -r
+        ```
+        理由: リモートリポジトリのブランチを一覧化するため。
+
+    1-2）ローカルブランチを作成してチェックアウト（既に作成済みのブランチがあったら一旦削除してから作成のオプション付き）
+        ```plaintext
+        git checkout -B <ローカル作業用のブランチ名> <リモートリポジトリにあるターゲットのブランチ名（origin/develop）>
+        ```
+        理由: ローカルブランチを作成してチェックアウトするため。
+
+    1-3）ローカルリポジトリのブランチを一覧化して、作業ブランチが正しく選択されているかを確認する（ターゲットに*が付いている）
+        ```plaintext
+        git branch
+        ```
+        理由: 作業ブランチが正しく選択されているか確認するため。
+
+    1-4）リモートリポジトリを最新化（作業開始時は必要に応じて実施する）
+        ```plaintext
+        git fetch origin
+        ```
+        理由: リモートリポジトリを最新化するため。
+
+    1-5）最新化したリモートリポジトリからcheckoutしているローカルブランチに対してマージ
+        ```plaintext
+        git merge <リモートリポジトリにあるターゲットのブランチ名（origin/develop）>
+        ```
+        理由: 最新化したリモートリポジトリからローカルブランチに対してマージするため。
+
+2. 作業ブランチにNodeパッケージを適用する
+    2-1）Node パッケージをインストールする
+        ```plaintext
+        yarn
+        ```
+        理由: Nodeパッケージをインストールするため。
+
+3. jestにて単体試験する
+
+4. ソース改修してコミットする
+
+5. ビルドしてデプロイする（非推奨）
+    ※基本的にはCodePipelineでビルド＆デプロイすること。
+
+    5-1）バックエンドビルド時の生成物を削除する
+        ```plaintext
+        rm -rf .aws-sam
+        ```
+        理由: バックエンドビルド時の生成物を削除するため。
+
+    5-2）jest実行時ビルド時の生成物を削除する
+        ```plaintext
+        sudo rm -rf ./docker/mysql_data/*
+        ```
+        理由: jest実行時ビルド時の生成物を削除するため。
+
+    ＜端末API向けバックエンドのビルド＆デプロイ手順＞
+    5-3）テンプレートを指定してビルドする
+        ```plaintext
+        sam build --template template_terminals.yaml
+        ```
+        理由: 指定されたテンプレートファイルを使用して、端末API向けのバックエンドをビルドするため。
+
+    5-4）デプロイする
+        ```plaintext
+        sam deploy --profile om-dev
+        ```
+        理由: 指定されたプロファイルを使用して、ビルドした端末API向けのバックエンドをデプロイするため。
+        ※デプロイに必要な情報は、samconfig.tomlの[default.deploy.parameters]を参照して行われる。
+
+    ＜管理CMS向けバックエンドのビルド＆デプロイ手順＞
+    5-5）テンプレートを指定してビルドする
+        ```plaintext
+        sam build --template template_cms.yaml
+        ```
+        理由: 指定されたテンプレートファイルを使用して、管理CMS向けのバックエンドをビルドするため。
+
+    5-6）デプロイする
+        ```plaintext
+        sam deploy --profile om-dev --config-env cms
+        ```
+        理由: 指定されたプロファイルと環境設定を使用して、ビルドした管理CMS向けのバックエンドをデプロイするため。
+        ※デプロイに必要な情報は、samconfig.tomlの[cms.deploy.parameters]を参照して行われる。（"--config-env cms"が指定された場合）
